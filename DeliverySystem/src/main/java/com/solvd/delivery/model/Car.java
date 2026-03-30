@@ -1,0 +1,26 @@
+package com.solvd.delivery.model;
+
+import com.solvd.delivery.model.abstractClasses.Vehicle;
+
+public class Car extends Vehicle {
+    private int numberOfDoors;
+
+    public Car(String name, String brand, String licensePlate, int numberOfDoors) {
+        super(name, brand, licensePlate);
+        this.numberOfDoors = numberOfDoors;
+    }
+
+    public int getNumberOfDoors() {
+        return numberOfDoors;
+    }
+
+    public void setNumberOfDoors(int numberOfDoors) {
+        this.numberOfDoors = numberOfDoors;
+    }
+
+    @Override
+    public String toString() {
+        return "Car named " + getName() + " brand " + getBrand() + " with "
+                + getNumberOfDoors() + " doors and license plate " + getLicensePlate();
+    }
+}
