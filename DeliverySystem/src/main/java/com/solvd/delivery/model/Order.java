@@ -18,6 +18,7 @@ import java.util.List;
 
 
 public class Order implements Trackable, Reviewable, Payable, Cancelable {
+    private static int idCounter = 1000;
     private int id;
     private List<OrderItem> orderItems;
     private Restaurant restaurant;
@@ -31,10 +32,10 @@ public class Order implements Trackable, Reviewable, Payable, Cancelable {
     private OrderStatus orderStatus;
     public static final Logger LOGGER = LogManager.getLogger(Main.class);
 
-    public Order(int id, List<OrderItem> orderItems, Restaurant restaurant,
+    public Order(List<OrderItem> orderItems, Restaurant restaurant,
                  LocalDateTime creationTime, Payment payment, Review orderReview,
                  Rider assignedRider,Chef assignedChef,  Client client, Address address, OrderStatus orderStatus) {
-        this.id = id;
+        this.id = idCounter++;
         this.orderItems = orderItems;
         this.restaurant = restaurant;
         this.creationTime = creationTime;
@@ -47,8 +48,8 @@ public class Order implements Trackable, Reviewable, Payable, Cancelable {
         this.orderStatus = orderStatus;
     }
 
-    public Order(int id, Restaurant restaurant, Client client) {
-        this(id, new ArrayList<>(), restaurant, LocalDateTime.now(), null, null,
+    public Order(Restaurant restaurant, Client client) {
+        this(new ArrayList<>(), restaurant, LocalDateTime.now(), null, null,
                 null, null, client, client.getAddress(), OrderStatus.PENDING_PAYMENT);
         LOGGER.info("Order no. " + id + " created!");
     }
@@ -197,6 +198,7 @@ public class Order implements Trackable, Reviewable, Payable, Cancelable {
             double orderTotal = getTotal();
             this.payment = new Payment(orderTotal, paymentOption);
             LOGGER.info("Order no. " + id + " for $" + orderTotal + " successfully paid!");
+            this.restaurant.addOrderToHistory(this);
             return;
         }
         LOGGER.warn("Order no. " + id + " can't be paid.");

@@ -56,7 +56,7 @@ public class Main {
         Product product3 = new Beverage("Beer",
                 "This is cold pilsener beer.", 2.5, true);
 
-        Order order1 = new Order(1000, ourRestaurant, client1);
+        Order order1 = new Order(ourRestaurant, client1);
 
         OrderItem item1order1 = new OrderItem(product2);
         OrderItem item2order1 = new OrderItem(product1, 3);
@@ -79,7 +79,7 @@ public class Main {
 
         order1.assignChef();
 
-        Order order2 = new Order(1001, ourRestaurant, client2);
+        Order order2 = new Order(ourRestaurant, client2);
 
         OrderItem item1order2 = new OrderItem(product2, 4);
         OrderItem item2order2 = new OrderItem(product1, 6);

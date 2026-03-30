@@ -8,7 +8,9 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Restaurant implements Reviewable {
     private String name;
@@ -16,6 +18,7 @@ public class Restaurant implements Reviewable {
     private List<Rider> riders;
     private List<Chef> chefs;
     private Review restaurantReview;
+    private Map<Integer, Order> orderHistory;
     public static final Logger LOGGER = LogManager.getLogger(Main.class);
 
 
@@ -24,6 +27,7 @@ public class Restaurant implements Reviewable {
         this.address = address;
         this.riders = riders;
         this.chefs = chefs;
+        this.orderHistory = new HashMap<>();
         LOGGER.info("Restaurant " + name + " sited in " + address.toString() + " created!");
     }
 
@@ -57,6 +61,22 @@ public class Restaurant implements Reviewable {
 
     public String getName() {
         return name;
+    }
+
+    public Review getRestaurantReview() {
+        return restaurantReview;
+    }
+
+    public void setRestaurantReview(Review restaurantReview) {
+        this.restaurantReview = restaurantReview;
+    }
+
+    public Map<Integer, Order> getOrderHistory() {
+        return orderHistory;
+    }
+
+    public void setOrderHistory(Map<Integer, Order> orderHistory) {
+        this.orderHistory = orderHistory;
     }
 
     public void setName(String name) {
@@ -111,5 +131,13 @@ public class Restaurant implements Reviewable {
         }
         this.restaurantReview = new Review(rate);
         LOGGER.info("Restaurant " + name + " reviewed with a rate of " + rate + " stars!");
+    }
+
+    public void addOrderToHistory(Order order) {
+        if (order != null) {
+            orderHistory.put(order.getId(), order);
+            LOGGER.info("Order no. " + order.getId() +
+                    " has been added to the restaurant " + name + "'s order history!.");
+        }
     }
 }
