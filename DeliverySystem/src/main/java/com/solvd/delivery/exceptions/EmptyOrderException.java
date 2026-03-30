@@ -1,4 +1,4 @@
-package com.solvd.delivery.model.exceptions;
+package com.solvd.delivery.exceptions;
 
 public class EmptyOrderException extends RuntimeException {
     public EmptyOrderException(String message) {

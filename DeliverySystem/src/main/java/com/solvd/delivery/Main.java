@@ -4,7 +4,7 @@ import com.solvd.delivery.model.*;
 import com.solvd.delivery.model.abstractClasses.PaymentOption;
 import com.solvd.delivery.model.abstractClasses.Product;
 import com.solvd.delivery.model.abstractClasses.Vehicle;
-import com.solvd.delivery.model.exceptions.EmptyOrderException;
+import com.solvd.delivery.exceptions.EmptyOrderException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -73,9 +73,9 @@ public class Main {
 
         order1.getTotal();
 
-        PaymentOption cash = new Card("Cash",
+        PaymentOption debitCard = new Card("Card",
                 "This option includes Visa and MasterCard", "Debit");
-        PaymentOption debitCard = new Cash("Cash",
+        PaymentOption cash = new Cash("Cash",
                 "This option includes bills and coins.", "USD");
 
         try {

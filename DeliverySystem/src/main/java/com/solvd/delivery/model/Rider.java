@@ -3,7 +3,7 @@ package com.solvd.delivery.model;
 import com.solvd.delivery.Main;
 import com.solvd.delivery.model.abstractClasses.Employee;
 import com.solvd.delivery.model.abstractClasses.Vehicle;
-import com.solvd.delivery.model.exceptions.InvalidRatingException;
+import com.solvd.delivery.exceptions.InvalidRatingException;
 import com.solvd.delivery.model.interfaces.Reviewable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
