@@ -32,6 +32,15 @@ public class Main {
         Chef chef1 = new Chef("Carlos Heinz", "+33 6546 2548", 5.6, 1);
         Chef chef2 = new Chef("Karla Zielinski", "+33 7844 2590", 6.2, 2);
 
+        EmployeeRoster<Chef> kitchenStaff = new EmployeeRoster<>("Kitchen");
+        kitchenStaff.clockInEmployee(chef1);
+
+        Menu<Food> foodMenu = new Menu<>("Main Courses");
+        foodMenu.addItem(new Food("Mexican burger", "Spicy", 12.0, false));
+
+        Menu<Beverage> drinksMenu = new Menu<>("Drinks");
+        drinksMenu.addItem(new Beverage("Beer", "Cold ale", 2.5, true));
+
         ourRestaurant.addRider(rider1);
         ourRestaurant.addRider(rider2);
 
@@ -128,5 +137,8 @@ public class Main {
 
         order1.addReview(5);
         order2.addReview(3, "The food tasted good, but half the fries were cold!");
+
+        Evaluation<Chef> chefEval = new Evaluation<>(chef1, 5, "Cooks the burgers perfectly!");
+        LOGGER.info(chefEval.toString());
     }
 }
