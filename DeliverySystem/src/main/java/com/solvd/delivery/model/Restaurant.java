@@ -14,9 +14,9 @@ public class Restaurant implements Reviewable {
     private Address address;
     private List<Rider> riders;
     private List<Chef> chefs;
-    private Review restaurantReview;
-    private Map<Integer, Order> orderHistory;
+    private Deque<Review> restaurantReviews;    private Map<Integer, Order> orderHistory;
     private Queue<Order> pendingOrders;
+    private Set historicClients;
     public static final Logger LOGGER = LogManager.getLogger(Main.class);
 
 
@@ -27,6 +27,8 @@ public class Restaurant implements Reviewable {
         this.chefs = chefs;
         this.orderHistory = new HashMap<>();
         this.pendingOrders = new LinkedList<>();
+        this.historicClients = new HashSet<>();
+        this.restaurantReviews = new ArrayDeque<>();
         LOGGER.info("Restaurant " + name + " sited in " + address.toString() + " created!");
     }
 
@@ -70,20 +72,28 @@ public class Restaurant implements Reviewable {
         this.pendingOrders = pendingOrders;
     }
 
-    public Review getRestaurantReview() {
-        return restaurantReview;
-    }
-
-    public void setRestaurantReview(Review restaurantReview) {
-        this.restaurantReview = restaurantReview;
-    }
-
     public Map<Integer, Order> getOrderHistory() {
         return orderHistory;
     }
 
     public void setOrderHistory(Map<Integer, Order> orderHistory) {
         this.orderHistory = orderHistory;
+    }
+
+    public Deque<Review> getRestaurantReviews() {
+        return restaurantReviews;
+    }
+
+    public void setRestaurantReviews(Deque<Review> restaurantReviews) {
+        this.restaurantReviews = restaurantReviews;
+    }
+
+    public Set getHistoricClients() {
+        return historicClients;
+    }
+
+    public void setHistoricClients(Set historicClients) {
+        this.historicClients = historicClients;
     }
 
     public void setName(String name) {
@@ -115,18 +125,17 @@ public class Restaurant implements Reviewable {
             totalPayroll += employee.getSalary(); // Polymorphism
         }
 
-
         LOGGER.info("The restaurant " + name + "'s monthly payroll is $" + totalPayroll + " USD");
         return totalPayroll;
     }
 
     @Override
     public void addReview(int rate, String comment) {
-        this.restaurantReview = new Review(rate, comment);
         if (rate < 0 || rate > 5) {
             LOGGER.error("Invalid rating.");
             throw new InvalidRatingException("Invalid rating.");
         }
+        this.restaurantReviews.addFirst(new Review(rate, comment));
         LOGGER.info("Restaurant " + name + " reviewed with a rate of " + rate + " stars!");
     }
 
@@ -136,7 +145,7 @@ public class Restaurant implements Reviewable {
             LOGGER.error("Invalid rating.");
             throw new InvalidRatingException("Invalid rating.");
         }
-        this.restaurantReview = new Review(rate);
+        this.restaurantReviews.addFirst(new Review(rate));
         LOGGER.info("Restaurant " + name + " reviewed with a rate of " + rate + " stars!");
     }
 
@@ -151,7 +160,28 @@ public class Restaurant implements Reviewable {
     public void addPendingOrder(Order order) {
         if (order != null) {
             pendingOrders.offer(order);
-            LOGGER.info("Order no." + order.getId() + " added to the restaurant " + name + "'s pending orders.");
+            LOGGER.info("Order no." + order.getId() + " added to the restaurant " + name + "'s kitchen.");
+        }
+    }
+
+    public void setOrderReadyToPrepare(Order order) {
+        if (order != null) {
+            addOrderToHistory(order);
+            historicClients.add(order.getClient());
+            addPendingOrder(order);
+            assignPendingOrdersToChefs();
+        }
+    }
+
+    public void assignPendingOrdersToChefs() {
+        for (Chef chef : chefs) {
+            if (!chef.isOccupied() && !pendingOrders.isEmpty()) {
+                Order oldestOrder = pendingOrders.poll();
+                oldestOrder.setAssignedChef(chef);
+                chef.setOccupied(true);
+                oldestOrder.setOrderStatus(OrderStatus.PREPARING);
+                LOGGER.info("Chef " + chef.getName() + " is now preparing Order no. " + oldestOrder.getId() + ".");
+            }
         }
     }
 }

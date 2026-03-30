@@ -2,8 +2,8 @@ package com.solvd.delivery.model;
 
 import com.solvd.delivery.Main;
 import com.solvd.delivery.model.abstractClasses.PaymentOption;
+import com.solvd.delivery.model.exceptions.EmptyOrderException;
 import com.solvd.delivery.model.exceptions.InvalidRatingException;
-import com.solvd.delivery.model.exceptions.UnavailableChefException;
 import com.solvd.delivery.model.exceptions.UnavailableRiderException;
 import com.solvd.delivery.model.interfaces.Cancelable;
 import com.solvd.delivery.model.interfaces.Payable;
@@ -130,6 +130,22 @@ public class Order implements Trackable, Reviewable, Payable, Cancelable {
         return orderItems.size();
     }
 
+    public List<OrderItem> getOrderItems() {
+        return orderItems;
+    }
+
+    public void setOrderItems(List<OrderItem> orderItems) {
+        this.orderItems = orderItems;
+    }
+
+    public Chef getAssignedChef() {
+        return assignedChef;
+    }
+
+    public void setAssignedChef(Chef assignedChef) {
+        this.assignedChef = assignedChef;
+    }
+
     public void addOrderItem(OrderItem orderItem) {
         if (orderStatus != OrderStatus.PENDING_PAYMENT) {
             LOGGER.warn("Order no. " + id + " is already paid and can't be modified.");
@@ -165,22 +181,6 @@ public class Order implements Trackable, Reviewable, Payable, Cancelable {
         throw new UnavailableRiderException("It wasn't possible to assign a chef to order no. " + id + ".");
     }
 
-    public void assignChef() {
-        if (orderStatus == OrderStatus.WAITING_FOR_CHEF) {
-            for (Chef chef : restaurant.getChefs()) {
-                if (!chef.isOccupied()) {
-                    this.assignedChef = chef;
-                    chef.setOccupied(true);
-                    orderStatus = OrderStatus.PREPARING;
-                    LOGGER.info("Chef " + chef.getName() + " assigned to order No. " + id + ".");
-                    return;
-                }
-            }
-        }
-        LOGGER.error("It wasn't possible to assign a chef to order no. " + id + ".");
-        throw new UnavailableChefException("It wasn't possible to assign a chef to order no. " + id + ".");
-    }
-
     public void deliverOrder() {
         if (orderStatus == OrderStatus.ON_THE_WAY) {
             orderStatus = OrderStatus.DELIVERED;
@@ -192,14 +192,17 @@ public class Order implements Trackable, Reviewable, Payable, Cancelable {
     }
 
     @Override
-    public void pay(PaymentOption paymentOption) {
+    public void pay(PaymentOption paymentOption) throws EmptyOrderException {
+        if (orderItems.isEmpty()) {
+            LOGGER.error("Attempted to pay for an empty order.");
+            throw new EmptyOrderException("Order no. " + id + " has no items and cannot be paid!");
+        }
         if (orderStatus == OrderStatus.PENDING_PAYMENT && !orderItems.isEmpty()) {
             orderStatus = OrderStatus.WAITING_FOR_CHEF;
             double orderTotal = getTotal();
             this.payment = new Payment(orderTotal, paymentOption);
             LOGGER.info("Order no. " + id + " for $" + orderTotal + " successfully paid!");
-            this.restaurant.addOrderToHistory(this);
-            this.restaurant.addPendingOrder(this);
+            this.restaurant.setOrderReadyToPrepare(this);
             return;
         }
         LOGGER.warn("Order no. " + id + " can't be paid.");

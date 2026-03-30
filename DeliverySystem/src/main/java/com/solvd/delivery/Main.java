@@ -4,6 +4,7 @@ import com.solvd.delivery.model.*;
 import com.solvd.delivery.model.abstractClasses.PaymentOption;
 import com.solvd.delivery.model.abstractClasses.Product;
 import com.solvd.delivery.model.abstractClasses.Vehicle;
+import com.solvd.delivery.model.exceptions.EmptyOrderException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -68,16 +69,22 @@ public class Main {
         PaymentOption debitCard = new Cash("Cash",
                 "This option includes bills and coins.", "USD");
 
-        order1.pay(cash);
+        try {
+            order1.pay(cash);
+        } catch (EmptyOrderException e) {
+            LOGGER.error("Payment failed: " + e.getMessage());
+        }
 
         order1.addOrderItem(item1order1);
         order1.addOrderItem(item2order1);
 
-        order1.pay(cash);
+        try {
+            order1.pay(cash);
+        } catch (EmptyOrderException e) {
+            LOGGER.error("Payment failed: " + e.getMessage());
+        }
 
         order1.checkDelivery();
-
-        order1.assignChef();
 
         Order order2 = new Order(ourRestaurant, client2);
 
@@ -90,9 +97,12 @@ public class Main {
         order2.addOrderItem(item3order2);
 
         order2.getTotal();
-        order2.pay(debitCard);
 
-        order2.assignChef();
+        try {
+            order2.pay(debitCard);
+        } catch (EmptyOrderException e) {
+            LOGGER.error("Payment failed: " + e.getMessage());
+        }
 
         order1.prepareOrder();
 
