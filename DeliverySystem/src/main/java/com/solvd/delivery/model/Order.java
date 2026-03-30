@@ -199,6 +199,7 @@ public class Order implements Trackable, Reviewable, Payable, Cancelable {
             this.payment = new Payment(orderTotal, paymentOption);
             LOGGER.info("Order no. " + id + " for $" + orderTotal + " successfully paid!");
             this.restaurant.addOrderToHistory(this);
+            this.restaurant.addPendingOrder(this);
             return;
         }
         LOGGER.warn("Order no. " + id + " can't be paid.");

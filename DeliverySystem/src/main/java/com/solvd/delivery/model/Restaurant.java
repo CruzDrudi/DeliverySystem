@@ -7,10 +7,7 @@ import com.solvd.delivery.model.interfaces.Reviewable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class Restaurant implements Reviewable {
     private String name;
@@ -19,6 +16,7 @@ public class Restaurant implements Reviewable {
     private List<Chef> chefs;
     private Review restaurantReview;
     private Map<Integer, Order> orderHistory;
+    private Queue<Order> pendingOrders;
     public static final Logger LOGGER = LogManager.getLogger(Main.class);
 
 
@@ -28,6 +26,7 @@ public class Restaurant implements Reviewable {
         this.riders = riders;
         this.chefs = chefs;
         this.orderHistory = new HashMap<>();
+        this.pendingOrders = new LinkedList<>();
         LOGGER.info("Restaurant " + name + " sited in " + address.toString() + " created!");
     }
 
@@ -61,6 +60,14 @@ public class Restaurant implements Reviewable {
 
     public String getName() {
         return name;
+    }
+
+    public Queue<Order> getPendingOrders() {
+        return pendingOrders;
+    }
+
+    public void setPendingOrders(Queue<Order> pendingOrders) {
+        this.pendingOrders = pendingOrders;
     }
 
     public Review getRestaurantReview() {
@@ -137,7 +144,14 @@ public class Restaurant implements Reviewable {
         if (order != null) {
             orderHistory.put(order.getId(), order);
             LOGGER.info("Order no. " + order.getId() +
-                    " has been added to the restaurant " + name + "'s order history!.");
+                    " has been added to the restaurant " + name + "'s order history.");
+        }
+    }
+
+    public void addPendingOrder(Order order) {
+        if (order != null) {
+            pendingOrders.offer(order);
+            LOGGER.info("Order no." + order.getId() + " added to the restaurant " + name + "'s pending orders.");
         }
     }
 }
