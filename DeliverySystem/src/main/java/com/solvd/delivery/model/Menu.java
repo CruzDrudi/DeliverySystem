@@ -1,6 +1,9 @@
 package com.solvd.delivery.model;
 
+import com.solvd.delivery.Main;
 import com.solvd.delivery.model.abstractClasses.Product;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,6 +11,7 @@ import java.util.List;
 public class Menu<T extends Product> {
     private String name;
     private List<T> items;
+    public static final Logger LOGGER = LogManager.getLogger(Main.class);
 
     public Menu(String name) {
         this.name = name;
@@ -32,6 +36,6 @@ public class Menu<T extends Product> {
 
     public void addItem(T item) {
         items.add(item);
-        System.out.println(item.getName() + " added to the " + name + " menu.");
+        LOGGER.info(item.getName() + " added to the " + name + " menu.");
     }
 }
