@@ -197,7 +197,7 @@ public class Order implements Trackable, Reviewable, Payable, Cancelable {
             LOGGER.error("Attempted to pay for an empty order.");
             throw new EmptyOrderException("Order no. " + id + " has no items and cannot be paid!");
         }
-        if (orderStatus == OrderStatus.PENDING_PAYMENT && !orderItems.isEmpty()) {
+        if (orderStatus == OrderStatus.PENDING_PAYMENT) {
             orderStatus = OrderStatus.WAITING_FOR_CHEF;
             double orderTotal = getTotal();
             this.payment = new Payment(orderTotal, paymentOption);
