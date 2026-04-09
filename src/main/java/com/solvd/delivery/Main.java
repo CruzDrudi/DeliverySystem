@@ -6,8 +6,11 @@ import com.solvd.delivery.model.abstractClasses.Product;
 import com.solvd.delivery.model.abstractClasses.Vehicle;
 import com.solvd.delivery.exceptions.EmptyOrderException;
 import com.solvd.delivery.model.enums.Currency;
+import com.solvd.delivery.utils.FileWordReader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.Arrays;
 
 public class Main {
     public static final Logger LOGGER = LogManager.getLogger(Main.class);
@@ -136,5 +139,11 @@ public class Main {
 
         Evaluation<Chef> chefEval = new Evaluation<>(chef1, 5, "Cooks the burgers perfectly!");
         LOGGER.info(chefEval.toString());
+
+        FileWordReader.countWordsFromFile(new String[]{"Argentina", "Spanish", "war"},
+                "ArgentineIndependence.txt");
+        FileWordReader.countWordsFromFile(new String[]{"space", "Moon"},
+                "Apollo11.txt");
+
     }
 }

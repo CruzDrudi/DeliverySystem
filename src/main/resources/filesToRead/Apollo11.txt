@@ -1,0 +1,40 @@
+Neil Armstrong and Buzz Aldrin’s walks on the Moon inspired awe in the millions who huddled round to watch on their televisions screens in 1969, and billions since.
+But the most awe-inspiring part of Apollo 11 was not televised in its entirety – how the astronauts got to the Moon and back.
+
+Moon fact: An automatic landing system was guiding the Apollo 11 astronauts on their final decent to the Moon. But Armstrong noticed it was sending them towards a boulder-covered crater. He quickly took manual control to take them safely to a flat area. When they finally landed, there was only 30 seconds worth of fuel left.
+
+How did we get to the Moon… and back?
+The first Moon landing is a story littered with big numbers. It took eight years, 10 practice-run missions, more than 400,000 engineers, scientists and technicians, and in today’s money roughly £150bn to make the first tentative steps on another planetary body.
+
+By pushing the limits of the most advanced technologies of the time, Nasa achieved President John F Kennedy’s 1961 national goal of sending an American to the Moon before the end of the decade. But how did the astronauts actually get there?
+
+Five days before stepping on the Moon, on the morning of 16 July 1969, Commander Neil Armstrong, Command Module Pilot Michael Collins and Lunar Module Pilot Edwin ‘Buzz’ Aldrin were still here on Earth. They were doing final checks inside the tiny Columbia command module. No roomier than the interior of a large car, Columbia would serve as their living quarters throughout the journey.
+
+This module sat at the very top of a 111 metre-tall Saturn V rocket. The most powerful rocket to ever fly, the Saturn V had three stages. Each stage would burn its engines until it was out of fuel and then separate from the rocket. The engines on the next stage would then fire, and the rocket would continue into space.
+
+At 9.32am local time, the first stage ignited and the rocket launched from Cape Kennedy. With the challenging task of lifting the heavy spacecraft off the ground, this stage was all about delivering power. It used a liquid hydrogen and oxygen mixture that was far from economical, getting through 18,000 kilograms of fuel per second. But it was effective, producing a force of 33 million newton (3.4 million kilograms of thrust, 7.5 million pounds force) for about two and a half minutes, and propelling the astronauts to an altitude of 68 kilometres.
+
+When the first stage separated, the second kicked in. This burned for six minutes, propelling the rocket to 175 kilometres altitude and accelerating it to close to orbital velocity. The final stage burned for just two and a half minutes, sending the astronauts into Earth’s orbit at a staggering 28,000 km/h.
+
+Illustration of rocket, satellites, moon and command module. Image text reads stage 1 burned 20 tonnes a second,  the tiny lunar lander is the only part that got to the moon, the common module was just 3 metres long, the Saturn V reached speeds of 28,000 Kilometres an hour. 
+Sailing to the Moon
+After circling the Earth one-and-a-half times, the third stage reignited for another six minutes to send Apollo 11 on its way to the Moon. It then separated, leaving just the Columbia command module housing the astronauts. But this discarded third stage contained the Eagle lunar module that would later land on the Moon. This meant the astronauts had the challenging task of docking with the Eagle lunar module in space to pull it out of its compartment.
+
+By the point at which they connected Eagle and Columbia, it was less than five hours since launch. The astronauts would have to wait another three days before finally arriving at the Moon. During this quiet time, the astronauts ate, slept and took pictures. They also checked they were on course using instruments that would be familiar to sailors hundreds of years ago: a telescope and a sextant.
+
+What would not be familiar were the inertial guidance system (which included accelerometers that sensed every change in the spacecraft's velocity or direction) and the onboard computer into which the astronauts fed their observations. By today’s standards, this computer was basic. It was less powerful than a pocket calculator and required the astronauts to supply it with code using punch cards. Yet for all its limitations, the journey to and from the Moon would have been impossible without the accuracy in navigation and control it provided.
+
+The Eagle has landed
+Once Apollo 11 reached the Moon, the spacecraft slid into orbit. On its third circle, Collins aboard Columbia watched as Armstrong and Aldrin undocked and began their descent to the Moon aboard Eagle. The Eagle lunar module had a descent rocket engine to slow it down, drop into a lower orbit and then hover over the surface. Guided by a landing radar, Armstrong piloted Eagle semi-manually using four clusters of rockets to finally touchdown in the Sea of Tranquillity on 20 July 1969. Four hours later, Armstrong was making “one small step for [a] man, one giant leap for mankind”.
+
+Eagle – Armstrong and Aldrin’s home for 21.5 hours on the surface of the Moon – was designed to never return to Earth. It consisted of two parts. The ‘descent stage’ was the gold-and-black lower section. It contained the rocket engine, fuel, science and exploration equipment, and a ladder so the astronauts could make those first steps on the Moon.
+
+The silver-and-black upper section, called the ascent stage, was the most important for the astronaut’s survival. It housed the crew's pressurised compartment and hatch to get out, electronic components, and the main rocket and smaller rocket clusters needed to launch from the lunar surface and re-dock with Columbia. This section separated from the descent stage when it launched, leaving half of Eagle stranded on the Moon forever.
+
+Speedy return
+The other half of Eagle docked with Columbia on its 27th orbit of the Moon. This reunited Armstrong and Aldrin with Collins aboard Columbia. The astronauts then jettisoned the ascent stage, leaving it in orbit until its eventual crash into the Moon in an unknown location.
+
+Only two and a half minutes firing of Columbia’s rocket was enough to send the astronauts on course back to Earth. And just 44 hours later, they started to prepare for re-entry. First, they performed a deorbit burn so that Columbia would start to descend back to Earth. Then, they separated from the rocket, leaving just the 3.23 metre x 3.91 metre cone-shaped section in which the astronauts were sat. After swivelling the module around so that the heat shield was facing Earth, they finally hit the atmosphere. Seconds later, the heat shield flew off and the parachutes deployed.
+
+Apollo 11 splashed down in the Pacific Ocean at 12.50 pm on 24 July 1969.
+
