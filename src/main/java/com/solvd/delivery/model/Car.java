@@ -1,12 +1,13 @@
 package com.solvd.delivery.model;
 
 import com.solvd.delivery.model.abstractClasses.Vehicle;
+import com.solvd.delivery.model.enums.VehicleType;
 
 public class Car extends Vehicle {
     private int numberOfDoors;
 
     public Car(String name, String brand, String licensePlate, int numberOfDoors) {
-        super(name, brand, licensePlate);
+        super(name, brand, licensePlate, VehicleType.CAR);
         this.numberOfDoors = numberOfDoors;
     }
 

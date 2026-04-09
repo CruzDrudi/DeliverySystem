@@ -5,6 +5,7 @@ import com.solvd.delivery.model.abstractClasses.PaymentOption;
 import com.solvd.delivery.exceptions.EmptyOrderException;
 import com.solvd.delivery.exceptions.InvalidRatingException;
 import com.solvd.delivery.exceptions.UnavailableRiderException;
+import com.solvd.delivery.model.enums.OrderStatus;
 import com.solvd.delivery.model.interfaces.Cancelable;
 import com.solvd.delivery.model.interfaces.Payable;
 import com.solvd.delivery.model.interfaces.Reviewable;

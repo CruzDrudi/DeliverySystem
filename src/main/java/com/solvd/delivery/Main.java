@@ -5,6 +5,7 @@ import com.solvd.delivery.model.abstractClasses.PaymentOption;
 import com.solvd.delivery.model.abstractClasses.Product;
 import com.solvd.delivery.model.abstractClasses.Vehicle;
 import com.solvd.delivery.exceptions.EmptyOrderException;
+import com.solvd.delivery.model.enums.Currency;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -71,7 +72,7 @@ public class Main {
         PaymentOption debitCard = new Card("Card",
                 "This option includes Visa and MasterCard", "Debit");
         PaymentOption cash = new Cash("Cash",
-                "This option includes bills and coins.", "USD");
+                "This option includes bills and coins.", Currency.USD);
 
         try {
             order1.pay(cash);

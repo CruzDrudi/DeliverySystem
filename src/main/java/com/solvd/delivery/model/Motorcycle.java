@@ -1,12 +1,13 @@
 package com.solvd.delivery.model;
 
 import com.solvd.delivery.model.abstractClasses.Vehicle;
+import com.solvd.delivery.model.enums.VehicleType;
 
 public class Motorcycle extends Vehicle {
     private boolean hasDeliveryBox;
 
     public Motorcycle(String name, String brand, String licensePlate, boolean hasDeliveryBox) {
-        super(name, brand, licensePlate);
+        super(name, brand, licensePlate, VehicleType.MOTORCYCLE);
         this.hasDeliveryBox = hasDeliveryBox;
     }
 
