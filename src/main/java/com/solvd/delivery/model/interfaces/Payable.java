@@ -4,5 +4,5 @@ import com.solvd.delivery.model.abstractClasses.PaymentOption;
 
 public interface Payable {
     void pay(PaymentOption paymentOption);
-    double getTotal();
+    double calculateTotal();
 }

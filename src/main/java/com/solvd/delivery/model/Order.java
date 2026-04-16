@@ -6,10 +6,7 @@ import com.solvd.delivery.exceptions.EmptyOrderException;
 import com.solvd.delivery.exceptions.InvalidRatingException;
 import com.solvd.delivery.exceptions.UnavailableRiderException;
 import com.solvd.delivery.model.enums.OrderStatus;
-import com.solvd.delivery.model.interfaces.Cancelable;
-import com.solvd.delivery.model.interfaces.Payable;
-import com.solvd.delivery.model.interfaces.Reviewable;
-import com.solvd.delivery.model.interfaces.Trackable;
+import com.solvd.delivery.model.interfaces.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -31,6 +28,7 @@ public class Order implements Trackable, Reviewable, Payable, Cancelable {
     private Client client;
     private Address address;
     private OrderStatus orderStatus;
+    private double totalPrice;
     public static final Logger LOGGER = LogManager.getLogger(Main.class);
 
     public Order(List<OrderItem> orderItems, Restaurant restaurant,
@@ -111,6 +109,14 @@ public class Order implements Trackable, Reviewable, Payable, Cancelable {
         this.client = client;
     }
 
+    public double getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(double totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
     public Address getAddress() {
         return address;
     }
@@ -158,28 +164,32 @@ public class Order implements Trackable, Reviewable, Payable, Cancelable {
     }
 
     @Override
-    public double getTotal() {
+    public double calculateTotal() {
         if (orderItems.isEmpty()) {
             LOGGER.warn("Order no. " + id + " has no products.");
-            return 0.0;
+            this.totalPrice = 0.0;
+            return totalPrice;
         }
-        return orderItems.stream().mapToDouble(OrderItem::getSubtotal).sum();
+        this.totalPrice = orderItems.stream().mapToDouble(OrderItem::getSubtotal).sum();
+        return totalPrice;
     }
 
     public void assignRider() {
         if (orderStatus == OrderStatus.WAITING_FOR_RIDER) {
-            for (Rider rider : restaurant.getRiders()) {
-                if (!rider.isOccupied()) {
-                    this.assignedRider = rider;
-                    rider.setOccupied(true);
-                    orderStatus = OrderStatus.ON_THE_WAY;
-                    LOGGER.info("Rider " + rider.getName() + " assigned to order No. " + id + ".");
-                    return;
-                }
-            }
+            Rider availableRider = restaurant.getRiders().stream()
+                    .filter(rider -> !rider.isOccupied())
+                    .findFirst()
+                    .orElseThrow(() -> {
+                        LOGGER.error("It wasn't possible to assign a rider to order no. " + id + ".");
+                        return new UnavailableRiderException("It wasn't possible to assign a rider to order no. " + id + ".");
+                    });
+            this.assignedRider = availableRider;
+            availableRider.setOccupied(true);
+            orderStatus = OrderStatus.ON_THE_WAY;
+            LOGGER.info("Rider " + availableRider.getName() + " assigned to order no. " + id + ".");
+        } else {
+            LOGGER.warn("Can´t assign a rider. Order no. " + id + " is not ready.");
         }
-        LOGGER.error("It wasn't possible to assign a rider to order no. " + id + ".");
-        throw new UnavailableRiderException("It wasn't possible to assign a chef to order no. " + id + ".");
     }
 
     public void deliverOrder() {
@@ -200,7 +210,7 @@ public class Order implements Trackable, Reviewable, Payable, Cancelable {
         }
         if (orderStatus == OrderStatus.PENDING_PAYMENT) {
             orderStatus = OrderStatus.WAITING_FOR_CHEF;
-            double orderTotal = getTotal();
+            double orderTotal = this.totalPrice;
             this.payment = new Payment(orderTotal, paymentOption);
             LOGGER.info("Order no. " + id + " for $" + orderTotal + " successfully paid!");
             this.restaurant.setOrderReadyToPrepare(this);
@@ -256,7 +266,6 @@ public class Order implements Trackable, Reviewable, Payable, Cancelable {
 
     public int getEstimatedMinutes() {
         int estimatedMinutes;
-
         switch (orderStatus) {
             case OrderStatus.DELIVERED:
                 estimatedMinutes = 0;
@@ -292,5 +301,31 @@ public class Order implements Trackable, Reviewable, Payable, Cancelable {
             return;
         }
         LOGGER.warn("Order no. " + id + " can't be cancelled!");
+    }
+
+    public double getDiscountedTotal(DiscountApplicator discountRule) {
+        double originalTotal = this.calculateTotal();
+        double discountedTotal = discountRule.applyDiscount(originalTotal);
+        this.setTotalPrice(discountedTotal);
+        LOGGER.info("Discount applied! The new total for order no. " + id + " is $" + discountedTotal + ".");
+        return discountedTotal;
+    }
+
+    public boolean validateOrder(OrderValidator validator) {
+        boolean isValid = validator.isValid(this);
+        if (isValid) {
+            LOGGER.info("Order no. " + id + " passed validation!");
+        } else {
+            LOGGER.warn("Order no. " + id + " failed validation.");
+        }
+        return isValid;
+    }
+
+    public void printReceipt(ReceiptFormatter formatter) {
+        String receiptText = formatter.format(this);
+
+        System.out.println("\n=== RESTAURANT RECEIPT ===");
+        System.out.println(receiptText);
+        System.out.println("==========================\n");
     }
 }

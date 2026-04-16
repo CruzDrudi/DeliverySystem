@@ -30,6 +30,8 @@ public class FileWordReader {
         try {
             String content = FileUtils.readFileToString(inputFile, "UTF-8");
 
+            // Couldn't use streams here because the variable outputFile is reassigned and all
+            // variables inside streams must be final or effectively final
             for (String word : words) {
                 int quantity = StringUtils.countMatches(content, word);
                 FileUtils.writeStringToFile(outputFile, "The word \"" + word +
@@ -37,7 +39,6 @@ public class FileWordReader {
                 LOGGER.info("The word \"" + word +
                         "\" appeared " + quantity + " times.");
             }
-
         } catch (IOException e) {
             LOGGER.error("Error reading or writing file: " + e.getMessage());
         }

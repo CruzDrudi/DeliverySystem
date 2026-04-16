@@ -6,11 +6,12 @@ import com.solvd.delivery.model.abstractClasses.Product;
 import com.solvd.delivery.model.abstractClasses.Vehicle;
 import com.solvd.delivery.exceptions.EmptyOrderException;
 import com.solvd.delivery.model.enums.Currency;
+import com.solvd.delivery.model.interfaces.DiscountApplicator;
+import com.solvd.delivery.model.interfaces.OrderValidator;
+import com.solvd.delivery.model.interfaces.ReceiptFormatter;
 import com.solvd.delivery.utils.FileWordReader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-import java.util.Arrays;
 
 public class Main {
     public static final Logger LOGGER = LogManager.getLogger(Main.class);
@@ -70,7 +71,7 @@ public class Main {
         OrderItem item1order1 = new OrderItem(product2);
         OrderItem item2order1 = new OrderItem(product1, 3);
 
-        order1.getTotal();
+        order1.calculateTotal();
 
         PaymentOption debitCard = new Card("Card",
                 "This option includes Visa and MasterCard", "Debit");
@@ -104,7 +105,21 @@ public class Main {
         order2.addOrderItem(item2order2);
         order2.addOrderItem(item3order2);
 
-        order2.getTotal();
+        order2.calculateTotal();
+
+        DiscountApplicator vipDiscount = total -> total * 0.80;
+
+        DiscountApplicator fiveDollarsOff = total -> total - 5.00;
+
+        order1.getDiscountedTotal(vipDiscount);
+        order2.getDiscountedTotal(fiveDollarsOff);
+
+        OrderValidator minimumPriceRule = order -> order.getTotalPrice() >= 15.00;
+
+        OrderValidator notEmptyRule = order -> !order.getOrderItems().isEmpty();
+
+        order1.validateOrder(minimumPriceRule);
+        order2.validateOrder(notEmptyRule);
 
         try {
             order2.pay(debitCard);
@@ -122,6 +137,16 @@ public class Main {
         order2.checkWaitTime();
 
         order2.prepareOrder();
+
+        ReceiptFormatter kitchenTicket = order ->
+                "KITCHEN TICKET: Order #" + order.getId() + " \nItems to cook: " + order.getNumberOfItems();
+
+        ReceiptFormatter customerReceipt = order ->
+                "Thank you for eating at Fluffy Puppies!\nOrder #" + order.getId()
+                        + " | Total Due: $" + order.getTotalPrice();
+
+        order1.printReceipt(kitchenTicket);
+        order2.printReceipt(customerReceipt);
 
         order2.assignRider();
 

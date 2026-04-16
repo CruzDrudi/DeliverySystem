@@ -116,15 +116,12 @@ public class Restaurant implements Reviewable {
     }
 
     public double calculateTotalPayroll() {
-        double totalPayroll = 0.0;
         List<Employee> employees = new ArrayList<>();
 
         employees.addAll(riders);
         employees.addAll(chefs);
 
-        for (Employee employee : employees) {
-            totalPayroll += employee.getSalary(); // Polymorphism
-        }
+        double totalPayroll = employees.stream().mapToDouble(Employee::getSalary).sum(); // Polymorphism
 
         LOGGER.info("The restaurant " + name + "'s monthly payroll is $" + totalPayroll + " USD");
         return totalPayroll;
@@ -161,7 +158,7 @@ public class Restaurant implements Reviewable {
     public void addPendingOrder(Order order) {
         if (order != null) {
             pendingOrders.offer(order);
-            LOGGER.info("Order no." + order.getId() + " added to the restaurant " + name + "'s kitchen.");
+            LOGGER.info("Order no. " + order.getId() + " added to the restaurant " + name + "'s kitchen.");
         }
     }
 
@@ -175,14 +172,16 @@ public class Restaurant implements Reviewable {
     }
 
     public void assignPendingOrdersToChefs() {
-        for (Chef chef : chefs) {
-            if (!chef.isOccupied() && !pendingOrders.isEmpty()) {
-                Order oldestOrder = pendingOrders.poll();
-                oldestOrder.setAssignedChef(chef);
-                chef.setOccupied(true);
-                oldestOrder.setOrderStatus(OrderStatus.PREPARING);
-                LOGGER.info("Chef " + chef.getName() + " is now preparing Order no. " + oldestOrder.getId() + ".");
-            }
-        }
+        chefs.stream()
+                .filter(chef -> !chef.isOccupied())
+                .forEach(chef -> {
+                    if (!pendingOrders.isEmpty()) {
+                        Order oldestOrder = pendingOrders.poll();
+                        oldestOrder.setAssignedChef(chef);
+                        chef.setOccupied(true);
+                        oldestOrder.setOrderStatus(OrderStatus.PREPARING);
+                        LOGGER.info("Chef " + chef.getName() + " is now preparing Order no. " + oldestOrder.getId() + ".");
+                    }
+                });
     }
 }
