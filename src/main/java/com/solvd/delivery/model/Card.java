@@ -1,7 +1,9 @@
 package com.solvd.delivery.model;
 
+import com.solvd.delivery.annotations.EntityInfo;
 import com.solvd.delivery.model.abstractClasses.PaymentOption;
 
+@EntityInfo("This represents the payment option card")
 public class Card extends PaymentOption {
     private String type; // "Debit", "Credit"
 

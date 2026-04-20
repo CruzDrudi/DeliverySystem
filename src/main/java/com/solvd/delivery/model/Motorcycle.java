@@ -1,8 +1,10 @@
 package com.solvd.delivery.model;
 
+import com.solvd.delivery.annotations.EntityInfo;
 import com.solvd.delivery.model.abstractClasses.Vehicle;
 import com.solvd.delivery.model.enums.VehicleType;
 
+@EntityInfo("This represents a real motorcycle")
 public class Motorcycle extends Vehicle {
     private boolean hasDeliveryBox;
 

@@ -1,7 +1,9 @@
 package com.solvd.delivery.model;
 
+import com.solvd.delivery.annotations.EntityInfo;
 import com.solvd.delivery.model.abstractClasses.Product;
 
+@EntityInfo("This represents a real beverage sold at the restaurant")
 public class Beverage extends Product {
     private boolean containsAlcohol;
 

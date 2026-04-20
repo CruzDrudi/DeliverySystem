@@ -1,10 +1,12 @@
 package com.solvd.delivery.model;
 
+import com.solvd.delivery.annotations.EntityInfo;
 import com.solvd.delivery.model.abstractClasses.Employee;
 
 import java.util.HashSet;
 import java.util.Set;
 
+@EntityInfo("This represents the employee roster of the restaurant")
 public class EmployeeRoster<T extends Employee> {
     private String departmentName;
     private Set<T> activeEmployees;

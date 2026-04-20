@@ -1,6 +1,7 @@
 package com.solvd.delivery.model;
 
 import com.solvd.delivery.Main;
+import com.solvd.delivery.annotations.EntityInfo;
 import com.solvd.delivery.model.abstractClasses.Employee;
 import com.solvd.delivery.exceptions.InvalidRatingException;
 import com.solvd.delivery.model.enums.OrderStatus;
@@ -10,14 +11,16 @@ import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 
+@EntityInfo("This represents a real restaurant")
 public class Restaurant implements Reviewable {
     private String name;
     private Address address;
     private List<Rider> riders;
     private List<Chef> chefs;
-    private Deque<Review> restaurantReviews;    private Map<Integer, Order> orderHistory;
+    private Deque<Review> restaurantReviews;
+    private Map<Integer, Order> orderHistory;
     private Queue<Order> pendingOrders;
-    private Set historicClients;
+    private Set<Client> historicClients;
     public static final Logger LOGGER = LogManager.getLogger(Main.class);
 
 

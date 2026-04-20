@@ -1,6 +1,7 @@
 package com.solvd.delivery.model;
 
 import com.solvd.delivery.Main;
+import com.solvd.delivery.annotations.EntityInfo;
 import com.solvd.delivery.model.abstractClasses.PaymentOption;
 import com.solvd.delivery.exceptions.EmptyOrderException;
 import com.solvd.delivery.exceptions.InvalidRatingException;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+@EntityInfo("This represents a real order made to the restaurant")
 public class Order implements Trackable, Reviewable, Payable, Cancelable {
     private static int idCounter = 1000;
     private int id;
@@ -33,7 +35,7 @@ public class Order implements Trackable, Reviewable, Payable, Cancelable {
 
     public Order(List<OrderItem> orderItems, Restaurant restaurant,
                  LocalDateTime creationTime, Payment payment, Review orderReview,
-                 Rider assignedRider,Chef assignedChef,  Client client, Address address, OrderStatus orderStatus) {
+                 Rider assignedRider, Chef assignedChef, Client client, Address address, OrderStatus orderStatus) {
         this.id = idCounter++;
         this.orderItems = orderItems;
         this.restaurant = restaurant;

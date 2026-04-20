@@ -1,7 +1,9 @@
 package com.solvd.delivery.model;
 
+import com.solvd.delivery.annotations.EntityInfo;
 import com.solvd.delivery.model.abstractClasses.Employee;
 
+@EntityInfo("This represents a real chef working at the restaurant")
 public class Chef extends Employee {
     private int kitchenNumber;
 

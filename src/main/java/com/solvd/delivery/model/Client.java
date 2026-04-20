@@ -1,8 +1,12 @@
 package com.solvd.delivery.model;
 
+import com.solvd.delivery.annotations.EntityInfo;
+import com.solvd.delivery.annotations.SensitiveData;
 import com.solvd.delivery.model.abstractClasses.Person;
 
+@EntityInfo("This represents a real client of the restaurant")
 public class Client extends Person {
+    @SensitiveData
     private int nationalId;
     private Address address;
 

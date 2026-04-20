@@ -1,5 +1,8 @@
 package com.solvd.delivery.model;
 
+import com.solvd.delivery.annotations.EntityInfo;
+
+@EntityInfo
 public class Evaluation<T> {
     private T subject;
     private int rate;
