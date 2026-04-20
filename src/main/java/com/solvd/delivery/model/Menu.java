@@ -1,6 +1,7 @@
 package com.solvd.delivery.model;
 
 import com.solvd.delivery.Main;
+import com.solvd.delivery.annotations.EntityInfo;
 import com.solvd.delivery.model.abstractClasses.Product;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -8,6 +9,7 @@ import org.apache.logging.log4j.Logger;
 import java.util.ArrayList;
 import java.util.List;
 
+@EntityInfo("This represents a real menu of the restaurant")
 public class Menu<T extends Product> {
     private String name;
     private List<T> items;

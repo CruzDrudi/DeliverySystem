@@ -1,7 +1,10 @@
 package com.solvd.delivery.model.abstractClasses;
 
+import com.solvd.delivery.annotations.SensitiveData;
+
 public abstract class Employee extends Person {
     private boolean occupied;
+    @SensitiveData
     private double salaryPerHour;
 
     public Employee(String name, String phoneNumber, boolean occupied, double salaryPerHour) {

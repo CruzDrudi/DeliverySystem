@@ -1,7 +1,9 @@
 package com.solvd.delivery.model;
 
+import com.solvd.delivery.annotations.EntityInfo;
 import com.solvd.delivery.model.abstractClasses.Product;
 
+@EntityInfo("This represents the food sold at the restaurant")
 public class Food extends Product {
     private boolean isVegetarian;
 

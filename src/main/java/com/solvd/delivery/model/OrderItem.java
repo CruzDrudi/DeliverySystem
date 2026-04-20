@@ -1,7 +1,9 @@
 package com.solvd.delivery.model;
 
+import com.solvd.delivery.annotations.EntityInfo;
 import com.solvd.delivery.model.abstractClasses.Product;
 
+@EntityInfo
 public class OrderItem {
     private Product product;
     private int quantity;

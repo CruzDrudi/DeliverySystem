@@ -1,6 +1,7 @@
 package com.solvd.delivery.model;
 
 import com.solvd.delivery.Main;
+import com.solvd.delivery.annotations.EntityInfo;
 import com.solvd.delivery.model.abstractClasses.Employee;
 import com.solvd.delivery.model.abstractClasses.Vehicle;
 import com.solvd.delivery.exceptions.InvalidRatingException;
@@ -8,6 +9,7 @@ import com.solvd.delivery.model.interfaces.Reviewable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+@EntityInfo("This represents a real rider of the restaurant")
 public class Rider extends Employee implements Reviewable {
     private Vehicle vehicle;
     private boolean occupied;

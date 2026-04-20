@@ -9,7 +9,9 @@ import com.solvd.delivery.model.enums.Currency;
 import com.solvd.delivery.model.interfaces.DiscountApplicator;
 import com.solvd.delivery.model.interfaces.OrderValidator;
 import com.solvd.delivery.model.interfaces.ReceiptFormatter;
+import com.solvd.delivery.utils.ObjectPrinter;
 import com.solvd.delivery.utils.FileWordReader;
+import com.solvd.delivery.utils.PrintedObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -170,5 +172,7 @@ public class Main {
         FileWordReader.countWordsFromFile(new String[]{"space", "Moon"},
                 "Apollo11.txt");
 
+        PrintedObject result = ObjectPrinter.inspect(client2);
+        System.out.println(result.text());
     }
 }
