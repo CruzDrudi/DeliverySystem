@@ -14,7 +14,7 @@ public class CustomRunnable implements Runnable {
     @Override
     public void run() {
         for (int i = 0; i < 10; i++) {
-            LOGGER.info("Runnable " + name + " running.");
+            LOGGER.info("Runnable " + Thread.currentThread().getName() + " running.");
         }
     }
 }
