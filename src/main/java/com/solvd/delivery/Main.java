@@ -1,5 +1,9 @@
 package com.solvd.delivery;
 
+import com.solvd.delivery.concurrency.Connection;
+import com.solvd.delivery.concurrency.ConnectionPool;
+import com.solvd.delivery.concurrency.CustomRunnable;
+import com.solvd.delivery.concurrency.CustomThread;
 import com.solvd.delivery.model.*;
 import com.solvd.delivery.model.abstractClasses.PaymentOption;
 import com.solvd.delivery.model.abstractClasses.Product;
@@ -14,6 +18,13 @@ import com.solvd.delivery.utils.FileWordReader;
 import com.solvd.delivery.utils.PrintedObject;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class Main {
     public static final Logger LOGGER = LogManager.getLogger(Main.class);
@@ -167,12 +178,87 @@ public class Main {
         Evaluation<Chef> chefEval = new Evaluation<>(chef1, 5, "Cooks the burgers perfectly!");
         LOGGER.info(chefEval.toString());
 
-        FileWordReader.countWordsFromFile(new String[]{"Argentina", "Spanish", "war"},
+        /* FileWordReader.countWordsFromFile(new String[]{"Argentina", "Spanish", "war"},
                 "ArgentineIndependence.txt");
         FileWordReader.countWordsFromFile(new String[]{"space", "Moon"},
-                "Apollo11.txt");
+                "Apollo11.txt"); */
 
         PrintedObject result = ObjectPrinter.inspect(client2);
         System.out.println(result.text());
+
+        CustomThread customThread = new CustomThread("Extends-Thread");
+        customThread.start();
+
+        CustomRunnable runnableTask = new CustomRunnable();
+        Thread runnableWorker = new Thread(runnableTask, "Implements-Runnable");
+        runnableWorker.start();
+
+        ConnectionPool pool = ConnectionPool.getInstance();
+        ExecutorService workers = Executors.newFixedThreadPool(7);
+
+        Runnable task = () -> {
+            try {
+                String name = Thread.currentThread().getName();
+                LOGGER.info(name + " → waiting for connection...");
+                Connection c = pool.acquire();
+                LOGGER.info(name + " → got " + c);
+                Thread.sleep(2000);
+                pool.release(c);
+                LOGGER.info(name + " → released " + c);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
+        };
+
+        for (int i = 0; i < 7; i++) {
+            workers.submit(task);
+        }
+
+        try {
+            workers.awaitTermination(10, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            LOGGER.error("Thread was interrupted: " + e.getMessage());
+        }
+
+        List<CompletableFuture<Void>> stages = new ArrayList<>();
+
+        for (int i = 1; i <= 7; i++) {
+            int taskId = i;
+            CompletableFuture<Void> stage = CompletableFuture
+                    .supplyAsync(() -> acquireOrThrow(pool, taskId), workers)
+                    .thenAcceptAsync(conn -> useAndRelease(pool, conn, taskId), workers)
+                    .exceptionally(err -> {
+                        LOGGER.error("Task-" + taskId + " failed: " + err.getMessage());
+                        return null;
+                    });
+            stages.add(stage);
+        }
+
+        CompletableFuture.allOf(stages.toArray(new CompletableFuture[0])).join();
+
+        workers.shutdown();
+        pool.shutdown();
+    }
+
+    private static Connection acquireOrThrow(ConnectionPool pool, int taskId) {
+        try {
+            LOGGER.info("Task-" + taskId + " [" + Thread.currentThread().getName() + "] → waiting for connection...");
+            Connection c = pool.acquire();
+            LOGGER.info("Task-" + taskId + " [" + Thread.currentThread().getName() + "] → got " + c);
+            return c;
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException(e);
+        }
+    }
+
+    private static void useAndRelease(ConnectionPool pool, Connection conn, int taskId) {
+        try {
+            Thread.sleep(2_000);
+            pool.release(conn);
+            LOGGER.info("Task-" + taskId + " [" + Thread.currentThread().getName() + "] → released " + conn);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
 }

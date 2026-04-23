@@ -14,6 +14,11 @@ public class CustomThread extends Thread {
     public void run() {
         for (int i = 0; i < 10; i++) {
             LOGGER.info("Thread " + getName() + " running.");
+            try {
+                Thread.sleep(500);
+            } catch (InterruptedException e) {
+                LOGGER.error("Thread was interrupted: " + e.getMessage());
+            }
         }
     }
 }
