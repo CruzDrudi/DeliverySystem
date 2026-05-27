@@ -8,12 +8,18 @@ import com.solvd.delivery.exceptions.InvalidRatingException;
 import com.solvd.delivery.exceptions.UnavailableRiderException;
 import com.solvd.delivery.model.enums.OrderStatus;
 import com.solvd.delivery.model.interfaces.*;
+import com.solvd.delivery.patterns.Strategy.DeliveredTimeStrategy;
+import com.solvd.delivery.patterns.Strategy.EstimatedTimeStrategy;
+import com.solvd.delivery.patterns.Strategy.OnTheWayTimeStrategy;
+import com.solvd.delivery.patterns.Strategy.WaitTimeStrategyRegistry;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.List;
+import java.util.Map;
 
 
 @EntityInfo("This represents a real order made to the restaurant")
@@ -31,6 +37,8 @@ public class Order implements Trackable, Reviewable, Payable, Cancelable {
     private Address address;
     private OrderStatus orderStatus;
     private double totalPrice;
+
+    private static final WaitTimeStrategyRegistry timeStrategyRegistry = new WaitTimeStrategyRegistry();
     public static final Logger LOGGER = LogManager.getLogger(Main.class);
 
     public Order(List<OrderItem> orderItems, Restaurant restaurant,
@@ -269,21 +277,8 @@ public class Order implements Trackable, Reviewable, Payable, Cancelable {
     }
 
     public int getEstimatedMinutes() {
-        int estimatedMinutes;
-        switch (orderStatus) {
-            case OrderStatus.DELIVERED:
-                estimatedMinutes = 0;
-                break;
-
-            case OrderStatus.ON_THE_WAY:
-                estimatedMinutes = 15;
-                break;
-
-            default:
-                int totalQuantity = orderItems.stream().mapToInt(OrderItem::getQuantity).sum();
-                estimatedMinutes = 15 + totalQuantity * 4;
-        }
-        return estimatedMinutes;
+        EstimatedTimeStrategy strategy = timeStrategyRegistry.getStrategyFor(this.orderStatus);
+        return strategy.calculateWaitTime(this);
     }
 
     @Override
