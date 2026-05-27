@@ -161,6 +161,7 @@ public class Order implements Trackable, Reviewable, Payable, Cancelable {
             return;
         }
         orderItems.add(orderItem);
+        calculateTotal();
         LOGGER.info(orderItem.getQuantity() + " " + orderItem.getProduct().getName() +
                 " added to the order no. " + id + ".");
     }
@@ -172,7 +173,8 @@ public class Order implements Trackable, Reviewable, Payable, Cancelable {
             this.totalPrice = 0.0;
             return totalPrice;
         }
-        this.totalPrice = orderItems.stream().mapToDouble(OrderItem::getSubtotal).sum();
+        double temp = orderItems.stream().mapToDouble(OrderItem::getSubtotal).sum();
+        this.totalPrice = Math.round(temp * 100.0) / 100.0;
         return totalPrice;
     }
 
@@ -308,7 +310,7 @@ public class Order implements Trackable, Reviewable, Payable, Cancelable {
     public double getDiscountedTotal(DiscountApplicator discountRule) {
         double originalTotal = this.calculateTotal();
         double discountedTotal = discountRule.applyDiscount(originalTotal);
-        this.setTotalPrice(discountedTotal);
+        setTotalPrice(Math.round(discountedTotal * 100.0) / 100.0);
         LOGGER.info("Discount applied! The new total for order no. " + id + " is $" + discountedTotal + ".");
         return discountedTotal;
     }
@@ -321,13 +323,5 @@ public class Order implements Trackable, Reviewable, Payable, Cancelable {
             LOGGER.warn("Order no. " + id + " failed validation.");
         }
         return isValid;
-    }
-
-    public void printReceipt(ReceiptFormatter formatter) {
-        String receiptText = formatter.format(this);
-
-        System.out.println("\n=== RESTAURANT RECEIPT ===");
-        System.out.println(receiptText);
-        System.out.println("==========================\n");
     }
 }

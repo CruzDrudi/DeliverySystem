@@ -13,6 +13,7 @@ import com.solvd.delivery.model.enums.Currency;
 import com.solvd.delivery.model.interfaces.DiscountApplicator;
 import com.solvd.delivery.model.interfaces.OrderValidator;
 import com.solvd.delivery.model.interfaces.ReceiptFormatter;
+import com.solvd.delivery.patterns.OrderBuilder;
 import com.solvd.delivery.utils.ObjectPrinter;
 import com.solvd.delivery.utils.FileWordReader;
 import com.solvd.delivery.utils.PrintedObject;
@@ -80,7 +81,10 @@ public class Main {
         Product product3 = new Beverage("Beer",
                 "This is cold pilsener beer.", 2.5, true);
 
-        Order order1 = new Order(ourRestaurant, client1);
+        Order order1 = new OrderBuilder()
+                .setRestaurant(ourRestaurant)
+                .setClient(client1)
+                .build();
 
         OrderItem item1order1 = new OrderItem(product2);
         OrderItem item2order1 = new OrderItem(product1, 3);
@@ -109,15 +113,13 @@ public class Main {
 
         order1.checkDelivery();
 
-        Order order2 = new Order(ourRestaurant, client2);
-
-        OrderItem item1order2 = new OrderItem(product2, 4);
-        OrderItem item2order2 = new OrderItem(product1, 6);
-        OrderItem item3order2 = new OrderItem(product3, 4);
-
-        order2.addOrderItem(item1order2);
-        order2.addOrderItem(item2order2);
-        order2.addOrderItem(item3order2);
+        Order order2 = new OrderBuilder()
+                .setClient(client2)
+                .setRestaurant(ourRestaurant)
+                .addOrderItem(new OrderItem(product2, 4))
+                .addOrderItem(new OrderItem(product1, 6))
+                .addOrderItem(new OrderItem(product3, 4))
+                .build();
 
         order2.calculateTotal();
 
