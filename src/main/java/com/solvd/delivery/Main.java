@@ -16,6 +16,7 @@ import com.solvd.delivery.model.interfaces.ReceiptFormatter;
 import com.solvd.delivery.utils.ObjectPrinter;
 import com.solvd.delivery.utils.FileWordReader;
 import com.solvd.delivery.utils.PrintedObject;
+import com.solvd.delivery.utils.ReceiptPrinter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -158,8 +159,8 @@ public class Main {
                 "Thank you for eating at Fluffy Puppies!\nOrder #" + order.getId()
                         + " | Total Due: $" + order.getTotalPrice();
 
-        order1.printReceipt(kitchenTicket);
-        order2.printReceipt(customerReceipt);
+        ReceiptPrinter.printReceipt(order1, kitchenTicket);
+        ReceiptPrinter.printReceipt(order2, customerReceipt);
 
         order2.assignRider();
 
