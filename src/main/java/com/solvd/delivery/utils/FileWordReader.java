@@ -13,7 +13,6 @@ import java.nio.charset.StandardCharsets;
 public class FileWordReader {
     public static final Logger LOGGER = LogManager.getLogger(Main.class);
 
-
     public static void countWordsFromFile(String[] words, String fileName) {
         File inputFile = new File("src/main/resources/filesToRead/" + fileName);
 

@@ -11,6 +11,6 @@ public class DeliveredTimeStrategy implements EstimatedTimeStrategy {
 
     @Override
     public boolean supports(OrderStatus status) {
-        return status ==  OrderStatus.DELIVERED;
+        return status == OrderStatus.DELIVERED;
     }
 }

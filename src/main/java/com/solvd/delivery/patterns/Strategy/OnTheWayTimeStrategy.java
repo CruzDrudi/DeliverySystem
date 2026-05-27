@@ -11,6 +11,6 @@ public class OnTheWayTimeStrategy implements EstimatedTimeStrategy {
 
     @Override
     public boolean supports(OrderStatus status) {
-        return status  ==  OrderStatus.ON_THE_WAY;
+        return status == OrderStatus.ON_THE_WAY;
     }
 }

@@ -10,10 +10,12 @@ import com.solvd.delivery.model.abstractClasses.Product;
 import com.solvd.delivery.model.abstractClasses.Vehicle;
 import com.solvd.delivery.exceptions.EmptyOrderException;
 import com.solvd.delivery.model.enums.Currency;
+import com.solvd.delivery.model.enums.ProductType;
 import com.solvd.delivery.model.interfaces.DiscountApplicator;
 import com.solvd.delivery.model.interfaces.OrderValidator;
 import com.solvd.delivery.model.interfaces.ReceiptFormatter;
 import com.solvd.delivery.patterns.Builder.OrderBuilder;
+import com.solvd.delivery.patterns.Factory.ProductFactory;
 import com.solvd.delivery.utils.ObjectPrinter;
 import com.solvd.delivery.utils.PrintedObject;
 import com.solvd.delivery.utils.ReceiptPrinter;
@@ -50,10 +52,12 @@ public class Main {
         kitchenStaff.clockInEmployee(chef1);
 
         Menu<Food> foodMenu = new Menu<>("Main Courses");
-        foodMenu.addItem(new Food("Mexican burger", "Spicy", 12.0, false));
+        foodMenu.addItem((Food) ProductFactory.createProduct(ProductType.FOOD,
+                "Mexican burger", "Spicy", 12.0, false));
 
         Menu<Beverage> drinksMenu = new Menu<>("Drinks");
-        drinksMenu.addItem(new Beverage("Beer", "Cold ale", 2.5, true));
+        drinksMenu.addItem((Beverage) ProductFactory.createProduct(ProductType.BEVERAGE,
+                "Beer", "Cold Ale", 2.5, true));
 
         ourRestaurant.addRider(rider1);
         ourRestaurant.addRider(rider2);
@@ -73,11 +77,11 @@ public class Main {
         Client client2 = new Client("Maria Jackson", 41575648,
                 "+545 585 6412", addressClient2);
 
-        Product product1 = new Food("French fries",
+        Product product1 = ProductFactory.createProduct(ProductType.FOOD, "French fries",
                 "These are simple french fries.", 5.5, true);
-        Product product2 = new Food("Mexican burger",
+        Product product2 = ProductFactory.createProduct(ProductType.FOOD,"Mexican burger",
                 "This is a spicy mexican burger.", 12.0, false);
-        Product product3 = new Beverage("Beer",
+        Product product3 = ProductFactory.createProduct(ProductType.BEVERAGE,"Beer",
                 "This is cold pilsener beer.", 2.5, true);
 
         Order order1 = new OrderBuilder()
