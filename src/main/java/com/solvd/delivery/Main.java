@@ -14,9 +14,12 @@ import com.solvd.delivery.model.enums.ProductType;
 import com.solvd.delivery.model.interfaces.DiscountApplicator;
 import com.solvd.delivery.model.interfaces.OrderValidator;
 import com.solvd.delivery.model.interfaces.ReceiptFormatter;
+import com.solvd.delivery.patterns.abstractFactory.EmployeeFactory;
+import com.solvd.delivery.patterns.abstractFactory.MorningShiftFactory;
 import com.solvd.delivery.patterns.builder.OrderBuilder;
 import com.solvd.delivery.patterns.decorator.BaconDecorator;
 import com.solvd.delivery.patterns.decorator.ExtraCheeseDecorator;
+import com.solvd.delivery.patterns.facade.OrderFacade;
 import com.solvd.delivery.patterns.factory.ProductFactory;
 import com.solvd.delivery.utils.ObjectPrinter;
 import com.solvd.delivery.utils.PrintedObject;
@@ -42,13 +45,13 @@ public class Main {
         Vehicle motorcycle = new Motorcycle("VXL 150", "Vespa", "AA551YJ", true);
         Vehicle car = new Car("Clio", "Renault", "HCI349", 3);
 
-        Rider rider1 = new Rider("Peter Coldwick", "+1 987 548 888",
-                motorcycle, 4.7);
-        Rider rider2 = new Rider("Jessica Samson", "+54 9 351 584 6487",
-                car, 5.2);
+        EmployeeFactory shiftFactory = new MorningShiftFactory();
 
-        Chef chef1 = new Chef("Carlos Heinz", "+33 6546 2548", 5.6, 1);
-        Chef chef2 = new Chef("Karla Zielinski", "+33 7844 2590", 6.2, 2);
+        Rider rider1 = shiftFactory.createRider("Peter Coldwick", "+1 987 548 888", motorcycle);
+        Rider rider2 = shiftFactory.createRider("Jessica Samson", "+54 9 351 584 6487", car);
+
+        Chef chef1 = shiftFactory.createChef("Carlos Heinz", "+33 6546 2548", 1);
+        Chef chef2 = shiftFactory.createChef("Karla Zielinski", "+33 7844 2590", 2);
 
         EmployeeRoster<Chef> kitchenStaff = new EmployeeRoster<>("Kitchen");
         kitchenStaff.clockInEmployee(chef1);
@@ -100,28 +103,6 @@ public class Main {
 
         order1.calculateTotal();
 
-        PaymentOption debitCard = new Card("Card",
-                "This option includes Visa and MasterCard", "Debit");
-        PaymentOption cash = new Cash("Cash",
-                "This option includes bills and coins.", Currency.USD);
-
-        try {
-            order1.pay(cash);
-        } catch (EmptyOrderException e) {
-            LOGGER.error("Payment failed: " + e.getMessage());
-        }
-
-        order1.addOrderItem(item1order1);
-        order1.addOrderItem(item2order1);
-
-        try {
-            order1.pay(cash);
-        } catch (EmptyOrderException e) {
-            LOGGER.error("Payment failed: " + e.getMessage());
-        }
-
-        order1.checkDelivery();
-
         Order order2 = new OrderBuilder()
                 .setClient(client2)
                 .setRestaurant(ourRestaurant)
@@ -130,38 +111,21 @@ public class Main {
                 .addOrderItem(new OrderItem(product3, 4))
                 .build();
 
-        order2.calculateTotal();
-
+        PaymentOption debitCard = new Card("Card", "This option includes Visa and MasterCard", "Debit");
+        PaymentOption cash = new Cash("Cash", "This option includes bills and coins.", Currency.USD);
         DiscountApplicator vipDiscount = total -> total * 0.80;
-
         DiscountApplicator fiveDollarsOff = total -> total - 5.00;
-
-        order1.getDiscountedTotal(vipDiscount);
-        order2.getDiscountedTotal(fiveDollarsOff);
-
         OrderValidator minimumPriceRule = order -> order.getTotalPrice() >= 15.00;
-
         OrderValidator notEmptyRule = order -> !order.getOrderItems().isEmpty();
 
-        order1.validateOrder(minimumPriceRule);
-        order2.validateOrder(notEmptyRule);
+        // --- 2. Add items to Order 1 ---
+        order1.addOrderItem(item1order1);
+        order1.addOrderItem(item2order1);
 
-        try {
-            order2.pay(debitCard);
-        } catch (EmptyOrderException e) {
-            LOGGER.error("Payment failed: " + e.getMessage());
-        }
 
-        order1.prepareOrder();
-
-        order1.assignRider();
-
-        order1.checkDelivery();
-        order1.checkWaitTime();
-
-        order2.checkWaitTime();
-
-        order2.prepareOrder();
+        OrderFacade orderFacade = new OrderFacade();
+        orderFacade.processFullOrder(order1, vipDiscount, minimumPriceRule, cash);
+        orderFacade.processFullOrder(order2, fiveDollarsOff, notEmptyRule, debitCard);
 
         ReceiptFormatter kitchenTicket = order ->
                 "KITCHEN TICKET: Order #" + order.getId() + " \nItems to cook: " + order.getNumberOfItems();
@@ -173,13 +137,6 @@ public class Main {
         ReceiptPrinter.printReceipt(order1, kitchenTicket);
         ReceiptPrinter.printReceipt(order2, customerReceipt);
 
-        order2.assignRider();
-
-        order2.checkWaitTime();
-
-        order1.deliverOrder();
-        order1.checkWaitTime();
-
         rider1.addReview(5, "Everything was perfect.");
 
         order2.deliverOrder();
@@ -190,66 +147,7 @@ public class Main {
         Evaluation<Chef> chefEval = new Evaluation<>(chef1, 5, "Cooks the burgers perfectly!");
         LOGGER.info(chefEval.toString());
 
-        /* FileWordReader.countWordsFromFile(new String[]{"Argentina", "Spanish", "war"},
-                "ArgentineIndependence.txt");
-        FileWordReader.countWordsFromFile(new String[]{"space", "Moon"},
-                "Apollo11.txt"); */
 
-        PrintedObject result = ObjectPrinter.inspect(client2);
-        System.out.println(result.text());
-
-        /* CustomThread customThread = new CustomThread("Extends-Thread");
-        customThread.start();
-
-        CustomRunnable runnableTask = new CustomRunnable();
-        Thread runnableWorker = new Thread(runnableTask, "Implements-Runnable");
-        runnableWorker.start();
-
-        ConnectionPool pool = ConnectionPool.getInstance();
-        ExecutorService workers = Executors.newFixedThreadPool(7);
-
-        Runnable task = () -> {
-            try {
-                String name = Thread.currentThread().getName();
-                LOGGER.info(name + " → waiting for connection...");
-                Connection c = pool.acquire();
-                LOGGER.info(name + " → got " + c);
-                Thread.sleep(2000);
-                pool.release(c);
-                LOGGER.info(name + " → released " + c);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-        };
-
-        for (int i = 0; i < 7; i++) {
-            workers.submit(task);
-        }
-
-        try {
-            workers.awaitTermination(10, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            LOGGER.error("Thread was interrupted: " + e.getMessage());
-        }
-
-        List<CompletableFuture<Void>> stages = new ArrayList<>();
-
-        for (int i = 1; i <= 7; i++) {
-            int taskId = i;
-            CompletableFuture<Void> stage = CompletableFuture
-                    .supplyAsync(() -> acquireOrThrow(pool, taskId), workers)
-                    .thenAcceptAsync(conn -> useAndRelease(pool, conn, taskId), workers)
-                    .exceptionally(err -> {
-                        LOGGER.error("Task-" + taskId + " failed: " + err.getMessage());
-                        return null;
-                    });
-            stages.add(stage);
-        }
-
-        CompletableFuture.allOf(stages.toArray(new CompletableFuture[0])).join();
-
-        workers.shutdown();
-        pool.shutdown(); */
     }
 
     private static Connection acquireOrThrow(ConnectionPool pool, int taskId) {
