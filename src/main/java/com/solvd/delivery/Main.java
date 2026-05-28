@@ -14,8 +14,8 @@ import com.solvd.delivery.model.enums.ProductType;
 import com.solvd.delivery.model.interfaces.DiscountApplicator;
 import com.solvd.delivery.model.interfaces.OrderValidator;
 import com.solvd.delivery.model.interfaces.ReceiptFormatter;
-import com.solvd.delivery.patterns.Builder.OrderBuilder;
-import com.solvd.delivery.patterns.Factory.ProductFactory;
+import com.solvd.delivery.patterns.builder.OrderBuilder;
+import com.solvd.delivery.patterns.factory.ProductFactory;
 import com.solvd.delivery.utils.ObjectPrinter;
 import com.solvd.delivery.utils.PrintedObject;
 import com.solvd.delivery.utils.ReceiptPrinter;
@@ -73,7 +73,7 @@ public class Main {
         Address addressClient1 = new Address("Main Street", 1050, 4, "A");
         Address addressClient2 = new Address("Pope Francis Road", 33);
 
-        Client client1 = new Client("Pedro", "+31 55 846 9855", addressClient1);
+        Client client1 = new Client("Pedro Zielinsky", "+31 55 846 9855", addressClient1);
         Client client2 = new Client("Maria Jackson", 41575648,
                 "+545 585 6412", addressClient2);
 
@@ -192,7 +192,7 @@ public class Main {
         PrintedObject result = ObjectPrinter.inspect(client2);
         System.out.println(result.text());
 
-        CustomThread customThread = new CustomThread("Extends-Thread");
+        /* CustomThread customThread = new CustomThread("Extends-Thread");
         customThread.start();
 
         CustomRunnable runnableTask = new CustomRunnable();
@@ -243,7 +243,7 @@ public class Main {
         CompletableFuture.allOf(stages.toArray(new CompletableFuture[0])).join();
 
         workers.shutdown();
-        pool.shutdown();
+        pool.shutdown(); */
     }
 
     private static Connection acquireOrThrow(ConnectionPool pool, int taskId) {

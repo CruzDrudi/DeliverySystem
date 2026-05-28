@@ -1,4 +1,4 @@
-package com.solvd.delivery.patterns.Factory;
+package com.solvd.delivery.patterns.factory;
 
 import com.solvd.delivery.model.Beverage;
 import com.solvd.delivery.model.Food;

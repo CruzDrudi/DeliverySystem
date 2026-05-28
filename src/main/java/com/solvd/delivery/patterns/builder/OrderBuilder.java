@@ -1,4 +1,4 @@
-package com.solvd.delivery.patterns.Builder;
+package com.solvd.delivery.patterns.builder;
 
 import com.solvd.delivery.model.*;
 import com.solvd.delivery.model.enums.OrderStatus;

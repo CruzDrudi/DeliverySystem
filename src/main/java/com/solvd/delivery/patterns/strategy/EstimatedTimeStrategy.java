@@ -1,4 +1,4 @@
-package com.solvd.delivery.patterns.Strategy;
+package com.solvd.delivery.patterns.strategy;
 
 import com.solvd.delivery.model.Order;
 import com.solvd.delivery.model.enums.OrderStatus;
