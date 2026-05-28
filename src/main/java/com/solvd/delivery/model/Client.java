@@ -1,14 +1,21 @@
 package com.solvd.delivery.model;
 
+import com.solvd.delivery.Main;
 import com.solvd.delivery.annotations.EntityInfo;
 import com.solvd.delivery.annotations.SensitiveData;
 import com.solvd.delivery.model.abstractClasses.Person;
+import com.solvd.delivery.patterns.observer.OrderStatusListener;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @EntityInfo("This represents a real client of the restaurant")
-public class Client extends Person {
+public class Client extends Person implements OrderStatusListener {
     @SensitiveData
     private int nationalId;
     private Address address;
+
+    public static final Logger LOGGER = LogManager.getLogger(Client.class);
+
 
     public Client(String name, int nationalId, String phoneNumber, Address address) {
         super(name, phoneNumber);
@@ -40,5 +47,11 @@ public class Client extends Person {
     public String toString() {
         return "Client " + getName() + ", national ID: " + getNationalId() +
                 ", phone number: " + getPhoneNumber() + " and address " + getAddress().toString();
+    }
+
+    @Override
+    public void onStatusChange(Order order) {
+        LOGGER.info("[Notification for " + this.getName() + "]: "
+                + order.getOrderStatus().getMessage());
     }
 }

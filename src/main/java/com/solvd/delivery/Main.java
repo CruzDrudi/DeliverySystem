@@ -10,12 +10,17 @@ import com.solvd.delivery.model.abstractClasses.Product;
 import com.solvd.delivery.model.abstractClasses.Vehicle;
 import com.solvd.delivery.exceptions.EmptyOrderException;
 import com.solvd.delivery.model.enums.Currency;
+import com.solvd.delivery.model.enums.ProductType;
 import com.solvd.delivery.model.interfaces.DiscountApplicator;
 import com.solvd.delivery.model.interfaces.OrderValidator;
 import com.solvd.delivery.model.interfaces.ReceiptFormatter;
+import com.solvd.delivery.patterns.builder.OrderBuilder;
+import com.solvd.delivery.patterns.decorator.BaconDecorator;
+import com.solvd.delivery.patterns.decorator.ExtraCheeseDecorator;
+import com.solvd.delivery.patterns.factory.ProductFactory;
 import com.solvd.delivery.utils.ObjectPrinter;
-import com.solvd.delivery.utils.FileWordReader;
 import com.solvd.delivery.utils.PrintedObject;
+import com.solvd.delivery.utils.ReceiptPrinter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -49,10 +54,12 @@ public class Main {
         kitchenStaff.clockInEmployee(chef1);
 
         Menu<Food> foodMenu = new Menu<>("Main Courses");
-        foodMenu.addItem(new Food("Mexican burger", "Spicy", 12.0, false));
+        foodMenu.addItem((Food) ProductFactory.createProduct(ProductType.FOOD,
+                "Mexican burger", "Spicy", 12.0, false));
 
         Menu<Beverage> drinksMenu = new Menu<>("Drinks");
-        drinksMenu.addItem(new Beverage("Beer", "Cold ale", 2.5, true));
+        drinksMenu.addItem((Beverage) ProductFactory.createProduct(ProductType.BEVERAGE,
+                "Beer", "Cold Ale", 2.5, true));
 
         ourRestaurant.addRider(rider1);
         ourRestaurant.addRider(rider2);
@@ -68,18 +75,25 @@ public class Main {
         Address addressClient1 = new Address("Main Street", 1050, 4, "A");
         Address addressClient2 = new Address("Pope Francis Road", 33);
 
-        Client client1 = new Client("Pedro", "+31 55 846 9855", addressClient1);
+        Client client1 = new Client("Pedro Zielinsky", "+31 55 846 9855", addressClient1);
         Client client2 = new Client("Maria Jackson", 41575648,
                 "+545 585 6412", addressClient2);
 
-        Product product1 = new Food("French fries",
+        Product product1 = ProductFactory.createProduct(ProductType.FOOD, "French fries",
                 "These are simple french fries.", 5.5, true);
-        Product product2 = new Food("Mexican burger",
+
+        Product product2 = ProductFactory.createProduct(ProductType.FOOD,"Mexican burger",
                 "This is a spicy mexican burger.", 12.0, false);
-        Product product3 = new Beverage("Beer",
+        product2 = new ExtraCheeseDecorator(product2);
+        product2 = new BaconDecorator(product2);
+
+        Product product3 = ProductFactory.createProduct(ProductType.BEVERAGE,"Beer",
                 "This is cold pilsener beer.", 2.5, true);
 
-        Order order1 = new Order(ourRestaurant, client1);
+        Order order1 = new OrderBuilder()
+                .setRestaurant(ourRestaurant)
+                .setClient(client1)
+                .build();
 
         OrderItem item1order1 = new OrderItem(product2);
         OrderItem item2order1 = new OrderItem(product1, 3);
@@ -108,15 +122,13 @@ public class Main {
 
         order1.checkDelivery();
 
-        Order order2 = new Order(ourRestaurant, client2);
-
-        OrderItem item1order2 = new OrderItem(product2, 4);
-        OrderItem item2order2 = new OrderItem(product1, 6);
-        OrderItem item3order2 = new OrderItem(product3, 4);
-
-        order2.addOrderItem(item1order2);
-        order2.addOrderItem(item2order2);
-        order2.addOrderItem(item3order2);
+        Order order2 = new OrderBuilder()
+                .setClient(client2)
+                .setRestaurant(ourRestaurant)
+                .addOrderItem(new OrderItem(product2, 4))
+                .addOrderItem(new OrderItem(product1, 6))
+                .addOrderItem(new OrderItem(product3, 4))
+                .build();
 
         order2.calculateTotal();
 
@@ -158,8 +170,8 @@ public class Main {
                 "Thank you for eating at Fluffy Puppies!\nOrder #" + order.getId()
                         + " | Total Due: $" + order.getTotalPrice();
 
-        order1.printReceipt(kitchenTicket);
-        order2.printReceipt(customerReceipt);
+        ReceiptPrinter.printReceipt(order1, kitchenTicket);
+        ReceiptPrinter.printReceipt(order2, customerReceipt);
 
         order2.assignRider();
 
@@ -186,7 +198,7 @@ public class Main {
         PrintedObject result = ObjectPrinter.inspect(client2);
         System.out.println(result.text());
 
-        CustomThread customThread = new CustomThread("Extends-Thread");
+        /* CustomThread customThread = new CustomThread("Extends-Thread");
         customThread.start();
 
         CustomRunnable runnableTask = new CustomRunnable();
@@ -237,7 +249,7 @@ public class Main {
         CompletableFuture.allOf(stages.toArray(new CompletableFuture[0])).join();
 
         workers.shutdown();
-        pool.shutdown();
+        pool.shutdown(); */
     }
 
     private static Connection acquireOrThrow(ConnectionPool pool, int taskId) {
