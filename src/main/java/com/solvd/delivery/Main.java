@@ -19,7 +19,7 @@ import com.solvd.delivery.patterns.abstractFactory.MorningShiftFactory;
 import com.solvd.delivery.patterns.builder.OrderBuilder;
 import com.solvd.delivery.patterns.decorator.BaconDecorator;
 import com.solvd.delivery.patterns.decorator.ExtraCheeseDecorator;
-import com.solvd.delivery.patterns.facade.OrderFacade;
+import com.solvd.delivery.patterns.mvc.OrderController;
 import com.solvd.delivery.patterns.factory.ProductFactory;
 import com.solvd.delivery.utils.ObjectPrinter;
 import com.solvd.delivery.utils.PrintedObject;
@@ -113,19 +113,15 @@ public class Main {
 
         PaymentOption debitCard = new Card("Card", "This option includes Visa and MasterCard", "Debit");
         PaymentOption cash = new Cash("Cash", "This option includes bills and coins.", Currency.USD);
+
         DiscountApplicator vipDiscount = total -> total * 0.80;
         DiscountApplicator fiveDollarsOff = total -> total - 5.00;
+
         OrderValidator minimumPriceRule = order -> order.getTotalPrice() >= 15.00;
         OrderValidator notEmptyRule = order -> !order.getOrderItems().isEmpty();
 
-        // --- 2. Add items to Order 1 ---
         order1.addOrderItem(item1order1);
         order1.addOrderItem(item2order1);
-
-
-        OrderFacade orderFacade = new OrderFacade();
-        orderFacade.processFullOrder(order1, vipDiscount, minimumPriceRule, cash);
-        orderFacade.processFullOrder(order2, fiveDollarsOff, notEmptyRule, debitCard);
 
         ReceiptFormatter kitchenTicket = order ->
                 "KITCHEN TICKET: Order #" + order.getId() + " \nItems to cook: " + order.getNumberOfItems();
@@ -134,8 +130,10 @@ public class Main {
                 "Thank you for eating at Fluffy Puppies!\nOrder #" + order.getId()
                         + " | Total Due: $" + order.getTotalPrice();
 
-        ReceiptPrinter.printReceipt(order1, kitchenTicket);
-        ReceiptPrinter.printReceipt(order2, customerReceipt);
+        OrderController appController = new OrderController();
+
+        appController.handleOrderRequest(order1, vipDiscount, minimumPriceRule, cash, kitchenTicket);
+        appController.handleOrderRequest(order2, fiveDollarsOff, notEmptyRule, debitCard, customerReceipt);
 
         rider1.addReview(5, "Everything was perfect.");
 
@@ -146,29 +144,5 @@ public class Main {
 
         Evaluation<Chef> chefEval = new Evaluation<>(chef1, 5, "Cooks the burgers perfectly!");
         LOGGER.info(chefEval.toString());
-
-
-    }
-
-    private static Connection acquireOrThrow(ConnectionPool pool, int taskId) {
-        try {
-            LOGGER.info("Task-" + taskId + " [" + Thread.currentThread().getName() + "] → waiting for connection...");
-            Connection c = pool.acquire();
-            LOGGER.info("Task-" + taskId + " [" + Thread.currentThread().getName() + "] → got " + c);
-            return c;
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new RuntimeException(e);
-        }
-    }
-
-    private static void useAndRelease(ConnectionPool pool, Connection conn, int taskId) {
-        try {
-            Thread.sleep(2_000);
-            pool.release(conn);
-            LOGGER.info("Task-" + taskId + " [" + Thread.currentThread().getName() + "] → released " + conn);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
     }
 }

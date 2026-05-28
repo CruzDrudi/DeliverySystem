@@ -246,7 +246,7 @@ public class Order implements Trackable, Reviewable, Payable, Cancelable {
     @Override
     public void addReview(int rate, String comment) {
         if (orderStatus != OrderStatus.DELIVERED) {
-            LOGGER.warn("Order no. " + id + "can't be reviewed.");
+            LOGGER.warn("Order no. " + id + " can't be reviewed.");
             return;
         }
         if (rate < 0 || rate > 5) {

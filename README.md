@@ -2,7 +2,7 @@
 
 An enterprise-level Java application simulating a restaurant delivery system. This project models the interactions between restaurants, clients, orders, chefs, and riders.
 
-Recent updates have heavily refactored the core domain to adhere to **SOLID Principles** and implement **Classic Gang of Four (GoF) Design Patterns**.
+Recent updates have heavily refactored the core domain to adhere to **SOLID Principles** and implement **Classic Gang of Four (GoF) Design Patterns**, alongside the **MVC Architectural Pattern**.
 
 ---
 
@@ -53,6 +53,18 @@ Recent updates have heavily refactored the core domain to adhere to **SOLID Prin
 ### 6. Proxy Pattern
 * **Location:** `PaymentProcessor` (Interface), `RealPaymentProcessor`, `PaymentProxy`
 * **Purpose:** Intercepts payments before they are executed. The `PaymentProxy` acts as a security bouncer, logging the transaction attempt and validating that the amount is greater than $0.00 before delegating to the `RealPaymentProcessor`.
+
+### 7. Facade Pattern
+* **Location:** `OrderFacade`
+* **Purpose:** Hides the complex orchestration of calculating totals, applying discounts, validating, paying, preparing, and assigning riders. The client simply calls `processFullOrder()`, and the Facade safely handles the entire subsystem lifecycle.
+
+### 8. Abstract Factory Pattern
+* **Location:** `EmployeeFactory`, `MorningShiftFactory`, `NightShiftFactory`
+* **Purpose:** Creates families of related objects (Chefs and Riders) without hardcoding their specific salary rates into the main execution. Changing from daytime standard pay to nighttime premium pay is as simple as switching the concrete factory instance.
+
+### 9. MVC (Model-View-Controller) Pattern
+* **Location:** `OrderController` (Controller), `Order` (Model), `ReceiptPrinter` (View)
+* **Purpose:** Decoupled the data layer from the presentation layer. The `OrderController` intercepts the incoming request, mutates the `Order` state via the Facade, and immediately updates the console View via the Printer, completely removing orchestration logic from the `Main` thread.
 
 ---
 
