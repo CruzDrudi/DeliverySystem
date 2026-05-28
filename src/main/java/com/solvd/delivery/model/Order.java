@@ -9,6 +9,8 @@ import com.solvd.delivery.exceptions.UnavailableRiderException;
 import com.solvd.delivery.model.enums.OrderStatus;
 import com.solvd.delivery.model.interfaces.*;
 import com.solvd.delivery.patterns.observer.OrderStatusListener;
+import com.solvd.delivery.patterns.proxy.PaymentProcessor;
+import com.solvd.delivery.patterns.proxy.PaymentProxy;
 import com.solvd.delivery.patterns.strategy.EstimatedTimeStrategy;
 import com.solvd.delivery.patterns.strategy.WaitTimeStrategyRegistry;
 import org.apache.logging.log4j.LogManager;
@@ -225,7 +227,11 @@ public class Order implements Trackable, Reviewable, Payable, Cancelable {
             LOGGER.error("Attempted to pay for an empty order.");
             throw new EmptyOrderException("Order no. " + id + " has no items and cannot be paid!");
         }
+
         if (orderStatus == OrderStatus.PENDING_PAYMENT) {
+            PaymentProcessor paymentProxy = new PaymentProxy();
+            paymentProxy.processPayment(this.totalPrice, paymentOption);
+
             setOrderStatus(OrderStatus.WAITING_FOR_CHEF);
             double orderTotal = this.totalPrice;
             this.payment = new Payment(orderTotal, paymentOption);
@@ -233,6 +239,7 @@ public class Order implements Trackable, Reviewable, Payable, Cancelable {
             this.restaurant.setOrderReadyToPrepare(this);
             return;
         }
+
         LOGGER.warn("Order no. " + id + " can't be paid.");
     }
 

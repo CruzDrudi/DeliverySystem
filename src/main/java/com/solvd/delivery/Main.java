@@ -15,6 +15,8 @@ import com.solvd.delivery.model.interfaces.DiscountApplicator;
 import com.solvd.delivery.model.interfaces.OrderValidator;
 import com.solvd.delivery.model.interfaces.ReceiptFormatter;
 import com.solvd.delivery.patterns.builder.OrderBuilder;
+import com.solvd.delivery.patterns.decorator.BaconDecorator;
+import com.solvd.delivery.patterns.decorator.ExtraCheeseDecorator;
 import com.solvd.delivery.patterns.factory.ProductFactory;
 import com.solvd.delivery.utils.ObjectPrinter;
 import com.solvd.delivery.utils.PrintedObject;
@@ -79,8 +81,12 @@ public class Main {
 
         Product product1 = ProductFactory.createProduct(ProductType.FOOD, "French fries",
                 "These are simple french fries.", 5.5, true);
+
         Product product2 = ProductFactory.createProduct(ProductType.FOOD,"Mexican burger",
                 "This is a spicy mexican burger.", 12.0, false);
+        product2 = new ExtraCheeseDecorator(product2);
+        product2 = new BaconDecorator(product2);
+
         Product product3 = ProductFactory.createProduct(ProductType.BEVERAGE,"Beer",
                 "This is cold pilsener beer.", 2.5, true);
 
