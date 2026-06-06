@@ -9,13 +9,11 @@ public class ExtraCheeseDecorator extends ProductDecorator {
 
     @Override
     public String getName() {
-        // We append our extra text to the original name!
         return wrappedProduct.getName() + " (w/ Extra Cheese)";
     }
 
     @Override
     public double getPrice() {
-        // We add $1.50 to whatever the original product cost!
         return wrappedProduct.getPrice() + 1.50;
     }
 

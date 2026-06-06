@@ -19,6 +19,7 @@ import org.apache.logging.log4j.Logger;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 
 @EntityInfo("This represents a real order made to the restaurant")
@@ -36,7 +37,7 @@ public class Order implements Trackable, Reviewable, Payable, Cancelable {
     private Address address;
     private OrderStatus orderStatus;
     private double totalPrice;
-    private List<OrderStatusListener> listeners = new ArrayList<>();
+    private List<OrderStatusListener> listeners = new CopyOnWriteArrayList<>();
 
     private static final WaitTimeStrategyRegistry timeStrategyRegistry = new WaitTimeStrategyRegistry();
     public static final Logger LOGGER = LogManager.getLogger(Main.class);
